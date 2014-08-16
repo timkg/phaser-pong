@@ -1,0 +1,20 @@
+{
+  "name": "pong",
+  "version": "0.0.0",
+  "authors": [
+    "timkg <tim.theodor@gmail.com>"
+  ],
+  "description": "A clone of the classic Pong in phaser.io",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "phaser-official": "~2.0.7"
+  }
+}
