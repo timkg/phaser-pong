@@ -20,6 +20,14 @@
 <script>
   var game = new Phaser.Game(600, 400, Phaser.AUTO, 'gameContainer');
   var keys = {};
+  var scores = {
+    left: 0,
+    right: 0
+  };
+
+  var BALL_SPEED = 150;
+  var PADDLE_SPEED = 200;
+  var NUMBER_OF_GAMES = 1;
 
   var mainState = {
 
@@ -31,7 +39,7 @@
     create: function () {
       this.leftPaddle = game.add.sprite(50, 150, 'paddle'); // not properly centered
       this.rightPaddle = game.add.sprite(550, 150, 'paddle'); // not properly centered
-      this.ball = game.add.sprite(300, 200, 'ball'); // not properly centered
+      this.ball = game.add.sprite(game.world.centerX, game.world.centerY, 'ball'); // not properly centered
 
       game.physics.arcade.enable(this.leftPaddle);
       game.physics.arcade.enable(this.rightPaddle);
@@ -43,8 +51,8 @@
       keys.rightUpKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
       keys.rightDownKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
 
-      this.ball.body.velocity.x = 100;
-      this.ball.body.velocity.y = -100;
+      this.ball.body.velocity.x = BALL_SPEED;
+      this.ball.body.velocity.y = -BALL_SPEED;
     },
 
     update: function () {
@@ -52,19 +60,19 @@
       this.rightPaddle.body.velocity.y = 0;
 
       if (keys.leftUpKey.isDown) {
-        this.leftPaddle.body.velocity.y = -100;
+        this.leftPaddle.body.velocity.y = -PADDLE_SPEED;
       }
 
       if (keys.leftDownKey.isDown) {
-        this.leftPaddle.body.velocity.y = 100;
+        this.leftPaddle.body.velocity.y = PADDLE_SPEED;
       }
 
       if (keys.rightUpKey.isDown) {
-        this.rightPaddle.body.velocity.y = -100;
+        this.rightPaddle.body.velocity.y = -PADDLE_SPEED;
       }
 
       if (keys.rightDownKey.isDown) {
-        this.rightPaddle.body.velocity.y = 100;
+        this.rightPaddle.body.velocity.y = PADDLE_SPEED;
       }
 
       if (this.ball.body.y <= game.world.bounds.top) {
@@ -75,12 +83,58 @@
         this.ball.body.velocity.y = -this.ball.body.velocity.y;
       }
 
+      if (this.ball.body.x >= (game.world.bounds.right - this.ball.body.width)) {
+        this.ballPassesRightPaddle();
+      }
+
+      if (this.ball.body.x <= (game.world.bounds.left)) {
+        this.ballPassesLeftPaddle();
+      }
+
       game.physics.arcade.overlap(this.leftPaddle, this.ball, this.ballTouchesPaddle, null, this);
       game.physics.arcade.overlap(this.rightPaddle, this.ball, this.ballTouchesPaddle, null, this);
     },
 
     ballTouchesPaddle: function (paddle, ball) {
       ball.body.velocity.x = -ball.body.velocity.x;
+    },
+
+    ballPassesRightPaddle: function () {
+      scores.left++;
+      console.log('left scores!', scores);
+      this.ballPassedPaddle();
+    },
+
+    ballPassesLeftPaddle: function () {
+      scores.right++;
+      console.log('right scores!', scores);
+      this.ballPassedPaddle();
+    },
+
+    ballPassedPaddle: function () {
+      if (scores.left + scores.right === NUMBER_OF_GAMES) {
+        this.end();
+      } else {
+        this.resetBall();
+      }
+    },
+
+    end: function () {
+      console.log('end!');
+
+      this.ball.body.x = game.world.centerX;
+      this.ball.body.y = game.world.centerY;
+
+      this.ball.body.velocity.x = 0;
+      this.ball.body.velocity.y = 0;
+    },
+
+    resetBall: function () {
+      this.ball.body.x = game.world.centerX;
+      this.ball.body.y = game.world.centerY;
+
+      this.ball.body.velocity.x = BALL_SPEED * (Math.random() > .5 ? -1 : 1);
+      this.ball.body.velocity.y = BALL_SPEED * (Math.random() > .5 ? -1 : 1);
     }
   };
 
