@@ -15,7 +15,61 @@
   <li>The game ends after 11 points are awarded in total.</li>
 </ul>
 
+<div id="gameContainer"></div>
 
+<script>
+  var game = new Phaser.Game(600, 400, Phaser.AUTO, 'gameContainer');
+
+  var mainState = {
+
+    preload: function () {
+      game.load.image('paddle', 'assets/paddle.png');
+      game.load.image('ball', 'assets/ball.png');
+    },
+
+    create: function () {
+      this.leftPaddle = game.add.sprite(50, 150, 'paddle'); // not properly centered
+      this.rightPaddle = game.add.sprite(550, 150, 'paddle'); // not properly centered
+      this.ball = game.add.sprite(300, 200, 'ball'); // not properly centered
+
+      var leftUpKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
+      var leftDownKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
+
+      leftUpKey.onDown.add(leftUp, this);
+      leftDownKey.onDown.add(leftDown, this);
+
+      var rightUpKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+      var rightDownKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+
+      rightUpKey.onDown.add(rightUp, this);
+      rightDownKey.onDown.add(rightDown, this);
+    },
+
+    update: function() {
+
+    }
+  };
+
+  game.state.add('main', mainState);
+  game.state.start('main');
+
+  function leftDown () {
+    console.log('down');
+  }
+
+  function leftUp () {
+    console.log('up');
+  }
+
+  function rightDown () {
+    console.log('down');
+  }
+
+  function rightUp () {
+    console.log('up');
+  }
+
+</script>
 
 </body>
 </html>
