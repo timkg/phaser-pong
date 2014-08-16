@@ -19,6 +19,7 @@
 
 <script>
   var game = new Phaser.Game(600, 400, Phaser.AUTO, 'gameContainer');
+  var keys = {};
 
   var mainState = {
 
@@ -32,43 +33,41 @@
       this.rightPaddle = game.add.sprite(550, 150, 'paddle'); // not properly centered
       this.ball = game.add.sprite(300, 200, 'ball'); // not properly centered
 
-      var leftUpKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
-      var leftDownKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
+      game.physics.arcade.enable(this.leftPaddle);
+      game.physics.arcade.enable(this.rightPaddle);
+      game.physics.arcade.enable(this.ball);
 
-      leftUpKey.onDown.add(leftUp, this);
-      leftDownKey.onDown.add(leftDown, this);
+      keys.leftUpKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
+      keys.leftDownKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
 
-      var rightUpKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-      var rightDownKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-
-      rightUpKey.onDown.add(rightUp, this);
-      rightDownKey.onDown.add(rightDown, this);
+      keys.rightUpKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+      keys.rightDownKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
     },
 
-    update: function() {
+    update: function () {
+      this.leftPaddle.body.velocity.y = 0;
+      this.rightPaddle.body.velocity.y = 0;
 
+      if (keys.leftUpKey.isDown) {
+        this.leftPaddle.body.velocity.y = -100;
+      }
+
+      if (keys.leftDownKey.isDown) {
+        this.leftPaddle.body.velocity.y = 100;
+      }
+
+      if (keys.rightUpKey.isDown) {
+        this.rightPaddle.body.velocity.y = -100;
+      }
+
+      if (keys.rightDownKey.isDown) {
+        this.rightPaddle.body.velocity.y = 100;
+      }
     }
   };
 
   game.state.add('main', mainState);
   game.state.start('main');
-
-  function leftDown () {
-    console.log('down');
-  }
-
-  function leftUp () {
-    console.log('up');
-  }
-
-  function rightDown () {
-    console.log('down');
-  }
-
-  function rightUp () {
-    console.log('up');
-  }
-
 </script>
 
 </body>
