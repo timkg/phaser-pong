@@ -42,6 +42,9 @@
 
       keys.rightUpKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
       keys.rightDownKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+
+      this.ball.body.velocity.x = 100;
+      this.ball.body.velocity.y = -100;
     },
 
     update: function () {
@@ -63,6 +66,21 @@
       if (keys.rightDownKey.isDown) {
         this.rightPaddle.body.velocity.y = 100;
       }
+
+      if (this.ball.body.y <= game.world.bounds.top) {
+        this.ball.body.velocity.y = -this.ball.body.velocity.y;
+      }
+
+      if (this.ball.body.y >= (game.world.bounds.bottom - this.ball.body.height)) {
+        this.ball.body.velocity.y = -this.ball.body.velocity.y;
+      }
+
+      game.physics.arcade.overlap(this.leftPaddle, this.ball, this.ballTouchesPaddle, null, this);
+      game.physics.arcade.overlap(this.rightPaddle, this.ball, this.ballTouchesPaddle, null, this);
+    },
+
+    ballTouchesPaddle: function (paddle, ball) {
+      ball.body.velocity.x = -ball.body.velocity.x;
     }
   };
 
